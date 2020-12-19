@@ -7,6 +7,7 @@ namespace Acme\Service;
 use Acme\Model\SymbolCollection;
 use Acme\Service\Contract\FileServiceInterface;
 use Acme\Service\Contract\HttpClientInterface;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class SymbolService
@@ -66,7 +67,9 @@ class SymbolService
      */
     public function getSymbols(): bool
     {
+        Log::info('Fetching symbols from ' . self::URL);
         $res = $this->httpClientService->get(self::URL, ['X-Finnhub-Token' => env('FINNHUB_TOKEN')]);
+        Log::info('Got response, saving...');
         return $this->fileService->put(env('SYMBOL_FILE', self::SYMBOL_FILE), $res);
     }
 

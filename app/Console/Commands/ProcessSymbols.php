@@ -2,26 +2,30 @@
 
 namespace App\Console\Commands;
 
+use Acme\Model\Symbol;
 use Acme\Service\SymbolService;
-use GuzzleHttp\Exception\GuzzleException;
+use App\Jobs\GetSymbolInfoJob;
 use Illuminate\Console\Command;
 
-class GetSymbol extends Command
+class ProcessSymbols extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'symbol:get';
+    protected $signature = 'symbol:process';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Retrieve list of symbols';
+    protected $description = 'fetches symbols info';
 
+    /**
+     * @var SymbolService
+     */
     protected SymbolService $symbolService;
 
     /**
@@ -31,8 +35,8 @@ class GetSymbol extends Command
      */
     public function __construct(SymbolService $symbolService)
     {
-        $this->symbolService = $symbolService;
         parent::__construct();
+        $this->symbolService = $symbolService;
     }
 
     /**
@@ -42,8 +46,12 @@ class GetSymbol extends Command
      */
     public function handle()
     {
-        $this->info('Starting job');
-        $result = $this->symbolService->getSymbols();
-        $this->info('Finished with status ' . $result);
+        $symbolCollection = $this->symbolService->listSymbols();
+
+        $symbolCollection->getSymbols()->each(function (Symbol $symbol) {
+            dispatch(new GetSymbolInfoJob($symbol->getSymbol()));
+        });
+
+        $this->info('processed ' . $symbolCollection->getSymbols()->count() . ' symbols');
     }
 }

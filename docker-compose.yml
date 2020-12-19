@@ -7,6 +7,8 @@ services:
     redis:
       image: redis:alpine
       container_name: stocks-redis
+      ports:
+        - "6379:6379"
 
     elasticsearch:
       image: elasticsearch:6.5.4

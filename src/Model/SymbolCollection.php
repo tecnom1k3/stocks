@@ -7,7 +7,7 @@ namespace Acme\Model;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 
-class SymbolCollection implements Arrayable
+class SymbolCollection implements Arrayable, ModelInterface
 {
     /**
      * @var Collection

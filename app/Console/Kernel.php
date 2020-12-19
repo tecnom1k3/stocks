@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\GetSymbol::class
+        Commands\GetSymbol::class,
+        Commands\ProcessSymbols::class
     ];
 
     /**

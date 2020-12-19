@@ -4,50 +4,51 @@
 namespace Acme\Model;
 
 
+use Acme\Service\Contract\JsonMapperServiceInterface;
+use Acme\Service\JsonMapperService;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Class Symbol
  * @package Acme\Model
  */
-class Symbol implements Arrayable
+class Symbol implements Arrayable, ModelInterface
 {
 
     /**
      * @var string
      */
-    private string $currency;
-    /**
-     * @var string
-     */
-    private string $description;
-    /**
-     * @var string
-     */
-    private string $displaySymbol;
-    /**
-     * @var string
-     */
-    private string $type;
+    protected string $currency;
 
     /**
      * @var string
      */
-    private string $symbol;
+    protected string $description;
 
     /**
-     * @param array $array
-     * @return Symbol
+     * @var string
      */
-    public static function fromArray(array $array)
+    protected string $displaySymbol;
+
+    /**
+     * @var string
+     */
+    protected string $type;
+
+    /**
+     * @var string
+     */
+    protected string $symbol;
+
+    /**
+     * @param array $array $array
+     * @return ModelInterface
+     */
+    public static function fromArray(array $array): ModelInterface
     {
-        $symbol = new self();
-        $symbol->setCurrency($array['currency'])
-            ->setDescription($array['description'])
-            ->setDisplaySymbol($array['displaySymbol'])
-            ->setSymbol($array['symbol'])
-            ->setType($array['type']);
-        return $symbol;
+        /** @var JsonMapperService $mapper */
+        $mapper = app(JsonMapperServiceInterface::class);
+        return $mapper->map($array, self::class);
     }
 
     /**
